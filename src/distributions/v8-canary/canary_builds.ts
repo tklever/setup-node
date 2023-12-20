@@ -8,6 +8,6 @@ export default class CanaryBuild extends BasePrereleaseNodejs {
   }
 
   protected getDistributionUrl(): string {
-    return 'https://nodejs.org/download/v8-canary';
+    return this.distributionRepository.distributionUrl;
   }
 }

@@ -4,13 +4,7 @@ import NightlyNodejs from './nightly/nightly_builds';
 import OfficialBuilds from './official_builds/official_builds';
 import RcBuild from './rc/rc_builds';
 import CanaryBuild from './v8-canary/canary_builds';
-
-enum Distributions {
-  DEFAULT = '',
-  CANARY = 'v8-canary',
-  NIGHTLY = 'nightly',
-  RC = 'rc'
-}
+import { Distributions } from "./constants";
 
 export function getNodejsDistribution(
   installerOptions: NodeInputs

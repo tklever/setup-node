@@ -8,6 +8,6 @@ export default class NightlyNodejs extends BasePrereleaseNodejs {
   }
 
   protected getDistributionUrl(): string {
-    return 'https://nodejs.org/download/nightly';
+    return this.distributionRepository.distributionUrl;
   }
 }

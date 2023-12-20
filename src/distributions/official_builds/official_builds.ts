@@ -173,7 +173,7 @@ export default class OfficialBuilds extends BaseDistribution {
   }
 
   protected getDistributionUrl(): string {
-    return `https://nodejs.org/dist`;
+    return this.distributionRepository.distributionUrl;
   }
 
   private getManifest(): Promise<tc.IToolRelease[]> {

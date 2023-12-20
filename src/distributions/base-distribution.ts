@@ -12,18 +12,24 @@ import os from 'os';
 import fs from 'fs';
 
 import {NodeInputs, INodeVersion, INodeVersionInfo} from './base-models';
+import { NodeJsDistributionRepository } from './repository';
 
 export default abstract class BaseDistribution {
   protected httpClient: hc.HttpClient;
   protected osPlat = os.platform();
+  protected distributionRepository: NodeJsDistributionRepository;
 
   constructor(protected nodeInfo: NodeInputs) {
     this.httpClient = new hc.HttpClient('setup-node', [], {
       allowRetries: true,
       maxRetries: 3
     });
+    this.distributionRepository = new NodeJsDistributionRepository(nodeInfo);
   }
 
+  /**
+   * @deprecated
+   */
   protected abstract getDistributionUrl(): string;
 
   public async setupNodeJs() {
@@ -97,7 +103,7 @@ export default abstract class BaseDistribution {
   }
 
   protected async getNodeJsVersions(): Promise<INodeVersion[]> {
-    const initialUrl = this.getDistributionUrl();
+    const initialUrl = this.distributionRepository.distributionUrl;
     const dataUrl = `${initialUrl}/index.json`;
 
     const response = await this.httpClient.getJson<INodeVersion[]>(dataUrl);
@@ -113,7 +119,7 @@ export default abstract class BaseDistribution {
         : `node-v${version}-${this.osPlat}-${osArch}`;
     const urlFileName: string =
       this.osPlat == 'win32' ? `${fileName}.7z` : `${fileName}.tar.gz`;
-    const initialUrl = this.getDistributionUrl();
+    const initialUrl = this.distributionRepository.distributionUrl;
     const url = `${initialUrl}/v${version}/${urlFileName}`;
 
     return <INodeVersionInfo>{
@@ -164,7 +170,7 @@ export default abstract class BaseDistribution {
     version: string,
     arch: string = os.arch()
   ): Promise<string> {
-    const initialUrl = this.getDistributionUrl();
+    const initialUrl = this.distributionRepository.distributionUrl;
     const osArch: string = this.translateArchToDistUrl(arch);
 
     // Create temporary folder to download to
